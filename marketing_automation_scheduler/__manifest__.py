@@ -44,6 +44,7 @@
         'mail',
     ],
     'data': [
+        'security/marketing_automation_scheduler_security.xml',
         'security/ir.model.access.csv',
         'data/server_actions_data.xml',
         'data/ir_cron_data.xml',

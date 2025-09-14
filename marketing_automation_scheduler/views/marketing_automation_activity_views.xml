@@ -3,8 +3,8 @@
     
     <!-- Extension de la vue formulaire des activités -->
     <record id="marketing_automation_activity_form_inherit" model="ir.ui.view">
-        <field name="name">marketing.automation.activity.form.inherit</field>
-        <field name="model">marketing.automation.activity</field>
+        <field name="name">marketing.activity.form.inherit</field>
+        <field name="model">marketing.activity</field>
         <field name="inherit_id" ref="marketing_automation.marketing_automation_activity_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='trigger_type']" position="after">
@@ -84,8 +84,8 @@
 
     <!-- Onglet pour afficher les activités générées -->
     <record id="marketing_automation_activity_form_inherit_notebook" model="ir.ui.view">
-        <field name="name">marketing.automation.activity.form.inherit.notebook</field>
-        <field name="model">marketing.automation.activity</field>
+        <field name="name">marketing.activity.form.inherit.notebook</field>
+        <field name="model">marketing.activity</field>
         <field name="inherit_id" ref="marketing_automation.marketing_automation_activity_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">

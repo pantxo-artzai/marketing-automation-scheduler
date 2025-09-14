@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Extension de la vue formulaire des activités -->
+    <record id="marketing_automation_activity_form_inherit" model="ir.ui.view">
+        <field name="name">marketing.automation.activity.form.inherit</field>
+        <field name="model">marketing.automation.activity</field>
+        <field name="inherit_id" ref="marketing_automation.marketing_automation_activity_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='trigger_type']" position="after">
+                <!-- Section Planification Avancée -->
+                <group string="Planification Avancée" attrs="{'invisible': [('activity_type', '!=', 'server_action')]}">
+                    <field name="is_scheduled"/>
+                </group>
+                
+                <group string="Paramètres de Planification" 
+                       attrs="{'invisible': ['|', ('is_scheduled', '=', False), ('activity_type', '!=', 'server_action')]}"
+                       col="2">
+                    
+                    <group string="Quantité et Fréquence">
+                        <field name="scheduled_quantity" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                        <field name="schedule_frequency" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                        <field name="schedule_start_date" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                    </group>
+                    
+                    <group string="Jours de la Semaine" 
+                           attrs="{'invisible': [('schedule_frequency', '!=', 'weekly')]}">
+                        <div class="o_row">
+                            <field name="monday" widget="boolean_button"/>
+                            <label for="monday" string="Lun"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="tuesday" widget="boolean_button"/>
+                            <label for="tuesday" string="Mar"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="wednesday" widget="boolean_button"/>
+                            <label for="wednesday" string="Mer"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="thursday" widget="boolean_button"/>
+                            <label for="thursday" string="Jeu"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="friday" widget="boolean_button"/>
+                            <label for="friday" string="Ven"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="saturday" widget="boolean_button"/>
+                            <label for="saturday" string="Sam"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="sunday" widget="boolean_button"/>
+                            <label for="sunday" string="Dim"/>
+                        </div>
+                    </group>
+                    
+                    <group string="Créneaux Horaires">
+                        <field name="time_slot_start" widget="float_time" 
+                               attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                        <field name="time_slot_end" widget="float_time" 
+                               attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                    </group>
+                    
+                    <group string="Intervalle">
+                        <field name="interval_value" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                        <field name="interval_unit" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+                    </group>
+                    
+                </group>
+                
+                <!-- Boutons d'actions -->
+                <div attrs="{'invisible': [('is_scheduled', '=', False)]}">
+                    <button name="action_generate_scheduled_activities" 
+                            string="Générer les Activités Planifiées" 
+                            type="object" 
+                            class="btn-primary"
+                            confirm="Cela va supprimer les activités planifiées existantes et en créer de nouvelles. Continuer ?"/>
+                </div>
+                
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Onglet pour afficher les activités générées -->
+    <record id="marketing_automation_activity_form_inherit_notebook" model="ir.ui.view">
+        <field name="name">marketing.automation.activity.form.inherit.notebook</field>
+        <field name="model">marketing.automation.activity</field>
+        <field name="inherit_id" ref="marketing_automation.marketing_automation_activity_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook attrs="{'invisible': [('is_scheduled', '=', False)]}">
+                    <page string="Activités Planifiées Générées">
+                        <field name="generated_scheduler_ids">
+                            <tree decoration-success="state=='executed'" 
+                                  decoration-danger="state=='failed'"
+                                  decoration-warning="state=='scheduled'">
+                                <field name="name"/>
+                                <field name="scheduled_date"/>
+                                <field name="execution_date"/>
+                                <field name="state"/>
+                                <field name="participants_count"/>
+                                <button name="action_execute_now" 
+                                        string="Exécuter" 
+                                        type="object" 
+                                        icon="fa-play"
+                                        attrs="{'invisible': [('state', '!=', 'scheduled')]}"/>
+                                <button name="action_reset_to_scheduled" 
+                                        string="Replanifier" 
+                                        type="object" 
+                                        icon="fa-refresh"
+                                        attrs="{'invisible': [('state', '=', 'scheduled')]}"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Marketing Automation Scheduler</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        .header { background: #875A7B; color: white; padding: 20px; text-align: center; }
+        .feature { margin: 20px 0; padding: 15px; border-left: 4px solid #875A7B; }
+        .screenshot { text-align: center; margin: 20px 0; }
+        .screenshot img { max-width: 100%; border: 1px solid #ddd; }
+        .usage-steps { background: #f8f9fa; padding: 20px; border-radius: 5px; }
+        .usage-steps ol { padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Marketing Automation Scheduler</h1>
+        <p>Planification avancée d'activités marketing avec fréquence et créneaux horaires</p>
+    </div>
+
+    <div class="feature">
+        <h2>🚀 Fonctionnalités Principales</h2>
+        <ul>
+            <li><strong>Planification Avancée :</strong> Définissez la quantité, fréquence et créneaux horaires</li>
+            <li><strong>Jours Personnalisés :</strong> Sélectionnez les jours de la semaine spécifiques</li>
+            <li><strong>Créneaux Horaires :</strong> Configurez les heures de début et fin (ex: 9h-17h)</li>
+            <li><strong>Exécution Automatique :</strong> Cron job intégré pour traitement automatique</li>
+            <li><strong>Interface Intuitive :</strong> Vues Kanban, Liste et Formulaire dédiées</li>
+            <li><strong>Actions Personnalisées :</strong> Actions serveur pour créer activités, emails, etc.</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h2>💼 Cas d'Usage</h2>
+        <ul>
+            <li><strong>Appels Commerciaux :</strong> Planifier 10 appels tous les mardi/mercredi de 9h à 17h</li>
+            <li><strong>Emails de Suivi :</strong> Envoyer des emails quotidiens pendant une semaine</li>
+            <li><strong>Réunions Client :</strong> Programmer des rendez-vous selon disponibilités</li>
+            <li><strong>Relances Automatiques :</strong> Système de rappels échelonnés</li>
+        </ul>
+    </div>
+
+    <div class="usage-steps">
+        <h2>📋 Guide d'Utilisation</h2>
+        <ol>
+            <li><strong>Prérequis :</strong> Module Marketing Automation installé</li>
+            <li><strong>Configuration :</strong> Créez ou modifiez une campagne marketing automation</li>
+            <li><strong>Activité :</strong> Ajoutez une activité de type "Server Action"</li>
+            <li><strong>Planification :</strong> Activez "Planification avancée" dans l'activité</li>
+            <li><strong>Paramètres :</strong> Définissez :
+                <ul>
+                    <li>Nombre d'activités (ex: 10)</li>
+                    <li>Fréquence (quotidien, hebdomadaire, mensuel)</li>
+                    <li>Jours de la semaine (mardi, mercredi...)</li>
+                    <li>Créneaux horaires (9h00 - 17h00)</li>
+                    <li>Date de début</li>
+                </ul>
+            </li>
+            <li><strong>Génération :</strong> Cliquez "Générer les Activités Planifiées"</li>
+            <li><strong>Suivi :</strong> Consultez l'onglet "Activités Planifiées Générées"</li>
+            <li><strong>Gestion :</strong> Utilisez le menu "Activités Planifiées" pour vue globale</li>
+        </ol>
+    </div>
+
+    <div class="feature">
+        <h2>⚙️ Configuration Technique</h2>
+        <p><strong>Actions Serveur Incluses :</strong></p>
+        <ul>
+            <li><strong>Créer Activité d'Appel :</strong> Crée une tâche d'appel dans la fiche contact</li>
+            <li><strong>Créer Activité de Réunion :</strong> Programme une réunion avec le contact</li>
+            <li><strong>Envoyer Email de Suivi :</strong> Envoi automatique d'emails personnalisés</li>
+        </ul>
+        
+        <p><strong>Cron Job :</strong> Exécution automatique toutes les 15 minutes</p>
+        <p><strong>États de Suivi :</strong> Planifié, Exécuté, Échoué, Annulé</p>
+    </div>
+
+    <div class="feature">
+        <h2>🔧 Personnalisation</h2>
+        <p>Vous pouvez créer vos propres actions serveur pour :</p>
+        <ul>
+            <li>Intégrer avec des systèmes externes (CRM, téléphonie...)</li>
+            <li>Créer des types d'activités spécifiques à votre métier</li>
+            <li>Adapter les notifications et rappels</li>
+            <li>Personnaliser les templates d'emails</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h2>📞 Support</h2>
+        <p>Pour toute question ou assistance :</p>
+        <ul>
+            <li>Documentation Odoo : marketing_automation</li>
+            <li>Support technique via votre intégrateur Odoo</li>
+            <li>Communauté Odoo pour questions générales</li>
+        </ul>
+    </div>
+
+</body>
+</html>

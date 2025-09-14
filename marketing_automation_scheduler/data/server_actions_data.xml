@@ -1,137 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Action serveur pour créer une activité d'appel -->
-        <record id="server_action_create_call_activity" model="ir.actions.server">
-            <field name="name">Créer Activité d'Appel</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="binding_model_id" ref="base.model_res_partner"/>
-            <field name="state">code</field>
-            <field name="code">
+    <!-- Action serveur pour créer une activité d'appel -->
+    <record id="server_action_create_call_activity" model="ir.actions.server">
+        <field name="name">Créer Activité d'Appel</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
 # Créer une activité d'appel pour le contact
 activity_type = env['mail.activity.type'].search([('name', 'ilike', 'call')], limit=1)
 if not activity_type:
-    # Créer le type d'activité s'il n'existe pas
     activity_type = env['mail.activity.type'].create({
         'name': 'Call',
         'summary': 'Appel téléphonique',
-        'icon': 'fa-phone',
-        'category': 'meeting'
     })
-
-# Calculer la date d'échéance (dans 2 heures)
-from datetime import datetime, timedelta
-due_date = datetime.now() + timedelta(hours=2)
-
-# Créer l'activité
-activity = env['mail.activity'].create({
-    'activity_type_id': activity_type.id,
-    'summary': f'Appel planifié pour {record.name}',
-    'note': f'Appel marketing automation planifié pour le contact {record.name}\nCampagne: {env.context.get("campaign_id", "N/A")}',
-    'res_id': record.id,
-    'res_model': 'res.partner',
-    'user_id': env.user.id,
-    'date_deadline': due_date.date(),
-})
-
-# Log dans le chatter
-record.message_post(
-    body=f"Une activité d'appel a été automatiquement créée par le système de marketing automation.",
-    message_type='notification'
-)
-
-# Log pour debug
-import logging
-_logger = logging.getLogger(__name__)
-_logger.info(f"Activité créée pour {record.name}: {activity.id}")
-            </field>
-        </record>
-
-        <!-- Action serveur pour créer une activité de réunion -->
-        <record id="server_action_create_meeting_activity" model="ir.actions.server">
-            <field name="name">Créer Activité de Réunion</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="binding_model_id" ref="base.model_res_partner"/>
-            <field name="state">code</field>
-            <field name="code">
-# Créer une activité de réunion pour le contact
-activity_type = env['mail.activity.type'].search([('name', 'ilike', 'meeting')], limit=1)
-if not activity_type:
-    activity_type = env['mail.activity.type'].create({
-        'name': 'Meeting',
-        'summary': 'Réunion',
-        'icon': 'fa-calendar',
-        'category': 'meeting'
+for partner in records:
+    env['mail.activity'].create({
+        'res_model_id': env['ir.model']._get_id('res.partner'),
+        'res_id': partner.id,
+        'activity_type_id': activity_type.id,
+        'summary': 'Appel programmé',
     })
-
-from datetime import datetime, timedelta
-due_date = datetime.now() + timedelta(days=1)
-
-activity = env['mail.activity'].create({
-    'activity_type_id': activity_type.id,
-    'summary': f'Réunion planifiée avec {record.name}',
-    'note': f'Réunion marketing automation planifiée avec le contact {record.name}\nCampagne: {env.context.get("campaign_id", "N/A")}',
-    'res_id': record.id,
-    'res_model': 'res.partner',
-    'user_id': env.user.id,
-    'date_deadline': due_date.date(),
-})
-
-record.message_post(
-    body=f"Une activité de réunion a été automatiquement créée par le système de marketing automation.",
-    message_type='notification'
-)
-            </field>
-        </record>
-
-        <!-- Action serveur pour envoyer un email de suivi -->
-        <record id="server_action_send_followup_email" model="ir.actions.server">
-            <field name="name">Envoyer Email de Suivi</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="binding_model_id" ref="base.model_res_partner"/>
-            <field name="state">code</field>
-            <field name="code">
-# Envoyer un email de suivi automatique
-if record.email:
-    # Template d'email simple
-    subject = f"Suivi automatique - {record.name}"
-    body = f"""
-    Bonjour {record.name or 'Cher contact'},
-    
-    Ceci est un message de suivi automatique généré par notre système de marketing automation.
-    
-    Notre équipe commerciale vous contactera prochainement pour discuter de vos besoins.
-    
-    Cordialement,
-    L'équipe commerciale
-    """
-    
-    # Envoyer l'email
-    mail_values = {
-        'email_from': env.user.email or 'noreply@yourcompany.com',
-        'email_to': record.email,
-        'subject': subject,
-        'body_html': body.replace('\n', '<br/>'),
-        'body': body,
-        'res_id': record.id,
-        'model': 'res.partner',
-    }
-    
-    mail = env['mail.mail'].create(mail_values)
-    mail.send()
-    
-    # Log dans le chatter
-    record.message_post(
-        body=f"Email de suivi automatique envoyé à {record.email}",
-        message_type='notification'
-    )
-else:
-    # Log si pas d'email
-    record.message_post(
-        body="Email de suivi automatique non envoyé: adresse email manquante",
-        message_type='notification'
-    )
-            </field>
-        </record>
-    </data>
+        ]]></field>
+    </record>
 </odoo>

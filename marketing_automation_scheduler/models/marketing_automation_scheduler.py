@@ -13,7 +13,7 @@ class MarketingAutomationScheduler(models.Model):
     )
     
     source_activity_id = fields.Many2one(
-        'marketing.automation.activity',
+        'marketing.activity',
         string='Activité source',
         required=True,
         ondelete='cascade'

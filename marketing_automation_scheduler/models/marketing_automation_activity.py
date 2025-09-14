@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import calendar
 
 class MarketingAutomationActivity(models.Model):
-    _inherit = 'marketing.automation.activity'
+    _inherit = 'marketing.activity'
     
     # Champs pour la planification avancée
     is_scheduled = fields.Boolean(

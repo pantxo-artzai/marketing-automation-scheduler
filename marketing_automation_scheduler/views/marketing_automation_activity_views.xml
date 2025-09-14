@@ -23,7 +23,7 @@
             <field name="interval_unit"/>
           </group>
 
-          <group string="Créneaux & Jours">
+          <group string="Créneaux &amp; Jours">
             <field name="time_slot_start"/>
             <field name="time_slot_end"/>
             <field name="monday"/><field name="tuesday"/><field name="wednesday"/>

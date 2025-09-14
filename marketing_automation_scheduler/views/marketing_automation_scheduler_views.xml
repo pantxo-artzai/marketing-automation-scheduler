@@ -83,11 +83,17 @@
     <field name="context">{'search_default_scheduled': 1}</field>
   </record>
 
-  <!-- MENU -->
-  <menuitem id="marketing_automation_scheduler_menu"
-            name="Activités Planifiées"
-            parent="marketing_automation.marketing_automation_menu_root"
-            action="marketing_automation_scheduler_action"
-            sequence="20"/>
+<!-- MENU racine propre au module -->
+<menuitem id="marketing_automation_scheduler_root"
+          name="Marketing Scheduler"
+          sequence="20"/>
+
+<!-- Sous-menu qui ouvre la liste -->
+<menuitem id="marketing_automation_scheduler_menu"
+          name="Activités Planifiées"
+          parent="marketing_automation_scheduler_root"
+          action="marketing_automation_scheduler_action"
+          sequence="10"/>
+
 
 </odoo>

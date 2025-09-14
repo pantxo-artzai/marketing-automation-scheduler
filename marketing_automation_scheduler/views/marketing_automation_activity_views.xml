@@ -32,25 +32,19 @@
           </group>
         </group>
 
-        <!-- Liste des éléments générés -->
-        <group string="Planification (Scheduler)" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
-          <field name="generated_scheduler_ids" context="{'default_activity_id': active_id}">
-            <tree editable="bottom">
-              <field name="name"/>
-              <field name="state"/>
-              <field name="scheduled_date"/>
-              <field name="executed_date"/>
-              <button name="action_execute_now" string="Exécuter" type="object"
-                      attrs="{'invisible': [('state', '!=', 'scheduled')]}"/>
-              <button name="action_reset_to_scheduled" string="Replanifier" type="object" icon="fa-refresh"
-                      attrs="{'invisible': [('state', '=', 'scheduled')]}"/>
-            </tree>
-          </field>
-          <!-- (optionnel) bouton pour générer depuis l'activité -->
-          <button name="action_generate_scheduled_activities" type="object"
-                  string="Générer les activités planifiées"
-                  attrs="{'invisible': [('is_scheduled','=',False)]}"/>
-        </group>
+<!-- Liste des éléments générés -->
+<group string="Planification (Scheduler)" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
+  <field name="generated_scheduler_ids" context="{'default_activity_id': active_id}">
+    <tree editable="bottom">
+      <field name="name"/>
+      <field name="scheduled_date"/>
+    </tree>
+  </field>
+
+  <button name="action_generate_scheduled_activities" type="object"
+          string="Générer les activités planifiées"
+          attrs="{'invisible': [('is_scheduled','=',False)]}"/>
+</group>
       </xpath>
     </field>
   </record>

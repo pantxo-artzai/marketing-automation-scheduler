@@ -142,22 +142,30 @@ class MarketingAutomationActivity(models.Model):
 
     # ---------- Génération ----------
     def _generate_scheduled_activities(self):
-        """Génère les activités planifiées selon les paramètres définis"""
         if not self.is_scheduled:
             return
 
-        # nettoie les anciennes
         self.generated_scheduler_ids.unlink()
-
         scheduler_obj = self.env['marketing.automation.scheduler']
         current_date = self.schedule_start_date
+
+        # map v18 -> valeurs attendues par le scheduler
+        def _map_activity_type(val):
+            mapping = {
+                'action': 'server_action',        # <-- FIX clé
+                'server_action': 'server_action',
+                'email': 'email',
+                'sms': 'sms',
+                'push': 'push',
+            }
+            return mapping.get(val, val)
 
         for i in range(self.scheduled_quantity):
             if i > 0:
                 current_date = self._calculate_next_execution_date(self.schedule_start_date, i)
             scheduled_time = self._calculate_scheduled_time(current_date)
 
-            # récupère l'action serveur depuis l'activité (v18 = server_action_id)
+            # récupérer l'action serveur depuis l'activité (v18 = server_action_id)
             server_action_id = False
             if hasattr(self, 'server_action_id') and self.server_action_id:
                 server_action_id = self.server_action_id.id
@@ -167,8 +175,8 @@ class MarketingAutomationActivity(models.Model):
             scheduler_obj.create({
                 'source_activity_id': self.id,
                 'campaign_id': self.campaign_id.id,
-                'activity_type': self.activity_type,  # ex: 'server_action'
-                'server_action': server_action_id,    # champ du scheduler = 'server_action'
+                'activity_type': _map_activity_type(self.activity_type),  # <-- utilise le mapping
+                'server_action': server_action_id,  # champ du scheduler
                 'scheduled_date': scheduled_time,
                 'name': f"{self.name} - #{i + 1}",
                 'state': 'scheduled',

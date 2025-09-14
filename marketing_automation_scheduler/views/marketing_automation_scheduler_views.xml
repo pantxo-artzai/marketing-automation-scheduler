@@ -1,232 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Vue Tree pour le planificateur -->
-    <record id="marketing_automation_scheduler_tree_view" model="ir.ui.view">
-        <field name="name">marketing.automation.scheduler.tree</field>
-        <field name="model">marketing.automation.scheduler</field>
-        <field name="arch" type="xml">
-            <tree string="Activités Planifiées" 
-                  decoration-success="state=='executed'" 
-                  decoration-danger="state=='failed'"
-                  decoration-warning="state=='scheduled'">
-                <field name="name"/>
-                <field name="campaign_id"/>
-                <field name="activity_type"/>
-                <field name="scheduled_date"/>
-                <field name="execution_date"/>
-                <field name="participants_count"/>
-                <field name="state"/>
-                <button name="action_execute_now" 
-                        string="Exécuter" 
-                        type="object" 
-                        icon="fa-play"
-                        attrs="{'invisible': [('state', '!=', 'scheduled')]}"/>
-                <button name="action_reset_to_scheduled" 
-                        string="Replanifier" 
-                        type="object" 
-                        icon="fa-refresh"
-                        attrs="{'invisible': [('state', '=', 'scheduled')]}"/>
-            </tree>
-        </field>
-    </record>
+  <!-- LIST view -->
+  <record id="marketing_automation_scheduler_list_view" model="ir.ui.view">
+    <field name="name">marketing.automation.scheduler.list</field>
+    <field name="model">marketing.automation.scheduler</field>
+    <field name="arch" type="xml">
+      <list string="Activités Planifiées"
+            decoration-success="state=='executed'"
+            decoration-danger="state=='failed'"
+            decoration-warning="state=='scheduled'">
+        <field name="name"/>
+        <field name="campaign_id"/>
+        <field name="activity_type"/>
+        <field name="scheduled_date"/>
+        <field name="execution_date"/>
+        <field name="participants_count"/>
+        <field name="state"/>
+        <button name="action_execute_now"
+                string="Exécuter"
+                type="object"
+                icon="fa-play"
+                modifiers="{'invisible': [['state','!=','scheduled']]}"/>
+        <button name="action_reset_to_scheduled"
+                string="Replanifier"
+                type="object"
+                icon="fa-refresh"
+                modifiers="{'invisible': [['state','=','scheduled']]}"/>
+      </list>
+    </field>
+  </record>
 
-    <!-- Vue Form pour le planificateur -->
-    <record id="marketing_automation_scheduler_form_view" model="ir.ui.view">
-        <field name="name">marketing.automation.scheduler.form</field>
-        <field name="model">marketing.automation.scheduler</field>
-        <field name="arch" type="xml">
-            <form string="Activité Planifiée">
-                <header>
-                    <button name="action_execute_now" 
-                            string="Exécuter Maintenant" 
-                            type="object" 
-                            class="btn-primary"
-                            attrs="{'invisible': [('state', '!=', 'scheduled')]}"/>
-                    <button name="action_reset_to_scheduled" 
-                            string="Replanifier" 
-                            type="object" 
-                            class="btn-secondary"
-                            attrs="{'invisible': [('state', '=', 'scheduled')]}"/>
-                    <field name="state" widget="statusbar" 
-                           statusbar_visible="scheduled,executed"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" class="o_text_overflow" placeholder="Nom de l'activité..."/>
-                        </h1>
-                    </div>
-                    
-                    <group>
-                        <group>
-                            <field name="campaign_id" readonly="1"/>
-                            <field name="source_activity_id" readonly="1"/>
-                            <field name="activity_type" readonly="1"/>
-                            <field name="server_action" readonly="1" 
-                                   attrs="{'invisible': [('activity_type', '!=', 'server_action')]}"/>
-                        </group>
-                        <group>
-                            <field name="scheduled_date"/>
-                            <field name="execution_date" readonly="1" 
-                                   attrs="{'invisible': [('execution_date', '=', False)]}"/>
-                            <field name="participants_count" readonly="1" 
-                                   attrs="{'invisible': [('participants_count', '=', 0)]}"/>
-                        </group>
-                    </group>
-                    
-                    <group string="Informations d'Erreur" 
-                           attrs="{'invisible': [('state', '!=', 'failed')]}">
-                        <field name="error_message" readonly="1"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+  <!-- FORM view -->
+  <record id="marketing_automation_scheduler_form_view" model="ir.ui.view">
+    <field name="name">marketing.automation.scheduler.form</field>
+    <field name="model">marketing.automation.scheduler</field>
+    <field name="arch" type="xml">
+      <form string="Activité Planifiée">
+        <header>
+          <button name="action_execute_now"
+                  string="Exécuter Maintenant"
+                  type="object"
+                  class="btn-primary"
+                  modifiers="{'invisible': [['state','!=','scheduled']]}"/>
+          <button name="action_reset_to_scheduled"
+                  string="Replanifier"
+                  type="object"
+                  class="btn-secondary"
+                  modifiers="{'invisible': [['state','=','scheduled']]}"/>
+          <field name="state" widget="statusbar" statusbar_visible="scheduled,executed"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="name" class="o_text_overflow" placeholder="Nom de l'activité..."/>
+            </h1>
+          </div>
 
-    <!-- Vue Search pour le planificateur -->
-    <record id="marketing_automation_scheduler_search_view" model="ir.ui.view">
-        <field name="name">marketing.automation.scheduler.search</field>
-        <field name="model">marketing.automation.scheduler</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="campaign_id"/>
-                <field name="source_activity_id"/>
-                <separator/>
-                <filter name="scheduled" string="Planifiées" 
-                        domain="[('state', '=', 'scheduled')]"/>
-                <filter name="executed" string="Exécutées" 
-                        domain="[('state', '=', 'executed')]"/>
-                <filter name="failed" string="Échouées" 
-                        domain="[('state', '=', 'failed')]"/>
-                <separator/>
-                <filter name="today" string="Aujourd'hui" 
-                        domain="[('scheduled_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
-                <filter name="this_week" string="Cette Semaine" 
-                        domain="[('scheduled_date', '>=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                <filter name="overdue" string="En Retard" 
-                        domain="[('state', '=', 'scheduled'), ('scheduled_date', '&lt;', datetime.datetime.now())]"/>
-                <group expand="0" string="Grouper par">
-                    <filter name="group_campaign" string="Campagne" context="{'group_by': 'campaign_id'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="group_date" string="Date" context="{'group_by': 'scheduled_date:day'}"/>
-                    <filter name="group_activity_type" string="Type d'Activité" context="{'group_by': 'activity_type'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+          <group>
+            <group>
+              <field name="campaign_id" readonly="1"/>
+              <field name="source_activity_id" readonly="1"/>
+              <field name="activity_type" readonly="1"/>
+              <field name="server_action"
+                     readonly="1"
+                     modifiers="{'invisible': [['activity_type','!=','server_action']]}"/>
+            </group>
+            <group>
+              <field name="scheduled_date"/>
+              <field name="execution_date"
+                     readonly="1"
+                     modifiers="{'invisible': [['execution_date','=',False]]}"/>
+              <field name="participants_count"
+                     readonly="1"
+                     modifiers="{'invisible': [['participants_count','=',0]]}"/>
+            </group>
+          </group>
 
-    <!-- Vue Kanban pour le planificateur -->
-    <record id="marketing_automation_scheduler_kanban_view" model="ir.ui.view">
-        <field name="name">marketing.automation.scheduler.kanban</field>
-        <field name="model">marketing.automation.scheduler</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
-                <field name="name"/>
-                <field name="campaign_id"/>
-                <field name="scheduled_date"/>
-                <field name="execution_date"/>
-                <field name="state"/>
-                <field name="participants_count"/>
-                <field name="activity_type"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_dropdown_kanban dropdown">
-                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
-                                    <span class="fa fa-ellipsis-v"/>
-                                </a>
-                                <div class="dropdown-menu" role="menu">
-                                    <a t-if="record.state.raw_value == 'scheduled'" name="action_execute_now" type="object" class="dropdown-item">Exécuter maintenant</a>
-                                    <a t-if="record.state.raw_value != 'scheduled'" name="action_reset_to_scheduled" type="object" class="dropdown-item">Replanifier</a>
-                                </div>
-                            </div>
-                            <div class="oe_kanban_content">
-                                <div class="o_kanban_record_title">
-                                    <field name="name"/>
-                                </div>
-                                <div class="o_kanban_record_subtitle">
-                                    <i class="fa fa-calendar"/> <field name="scheduled_date"/>
-                                </div>
-                                <div class="o_kanban_record_body">
-                                    <field name="campaign_id"/>
-                                    <br/>
-                                    <t t-if="record.activity_type.raw_value == 'server_action'">
-                                        <i class="fa fa-cogs"/> Action Serveur
-                                    </t>
-                                    <t t-if="record.activity_type.raw_value == 'email'">
-                                        <i class="fa fa-envelope"/> Email
-                                    </t>
-                                </div>
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <t t-if="record.participants_count.raw_value > 0">
-                                            <i class="fa fa-users"/> <field name="participants_count"/> participants
-                                        </t>
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <t t-if="record.execution_date.raw_value">
-                                            <i class="fa fa-check-circle text-success"/> <field name="execution_date"/>
-                                        </t>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+          <group string="Informations d'Erreur"
+                 modifiers="{'invisible': [['state','!=','failed']]}">
+            <field name="error_message" readonly="1"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- SEARCH view -->
+  <record id="marketing_automation_scheduler_search_view" model="ir.ui.view">
+    <field name="name">marketing.automation.scheduler.search</field>
+    <field name="model">marketing.automation.scheduler</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="campaign_id"/>
+        <field name="source_activity_id"/>
+        <separator/>
+        <filter name="scheduled" string="Planifiées" domain="[('state','=','scheduled')]"/>
+        <filter name="executed" string="Exécutées" domain="[('state','=','executed')]"/>
+        <filter name="failed"   string="Échouées"  domain="[('state','=','failed')]"/>
+        <!-- Filtres date simplifiés pour éviter l'évaluation Python côté client -->
+        <separator/>
+        <filter name="from_today" string="À partir d'aujourd'hui" domain="[('scheduled_date','>=', context_today())]"/>
+        <group expand="0" string="Grouper par">
+          <filter name="group_campaign"      string="Campagne"        context="{'group_by':'campaign_id'}"/>
+          <filter name="group_state"         string="État"            context="{'group_by':'state'}"/>
+          <filter name="group_activity_type" string="Type d'Activité" context="{'group_by':'activity_type'}"/>
+          <filter name="group_date"          string="Date (jour)"     context="{'group_by':'scheduled_date:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- KANBAN view -->
+  <record id="marketing_automation_scheduler_kanban_view" model="ir.ui.view">
+    <field name="name">marketing.automation.scheduler.kanban</field>
+    <field name="model">marketing.automation.scheduler</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="state" class="o_kanban_small_column">
+        <field name="name"/>
+        <field name="campaign_id"/>
+        <field name="scheduled_date"/>
+        <field name="execution_date"/>
+        <field name="state"/>
+        <field name="participants_count"/>
+        <field name="activity_type"/>
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_card oe_kanban_global_click">
+              <div class="o_dropdown_kanban dropdown">
+                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                  <span class="fa fa-ellipsis-v"/>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                  <a t-if="record.state.raw_value == 'scheduled'" name="action_execute_now" type="object" class="dropdown-item">Exécuter maintenant</a>
+                  <a t-if="record.state.raw_value != 'scheduled'" name="action_reset_to_scheduled" type="object" class="dropdown-item">Replanifier</a>
+                </div>
+              </div>
+              <div class="oe_kanban_content">
+                <div class="o_kanban_record_title">
+                  <field name="name"/>
+                </div>
+                <div class="o_kanban_record_subtitle">
+                  <i class="fa fa-calendar"/> <field name="scheduled_date"/>
+                </div>
+                <div class="o_kanban_record_body">
+                  <field name="campaign_id"/>
+                  <br/>
+                  <t t-if="record.activity_type.raw_value == 'server_action'">
+                    <i class="fa fa-cogs"/> Action Serveur
+                  </t>
+                  <t t-if="record.activity_type.raw_value == 'email'">
+                    <i class="fa fa-envelope"/> Email
+                  </t>
+                </div>
+                <div class="o_kanban_record_bottom">
+                  <div class="oe_kanban_bottom_left">
+                    <t t-if="record.participants_count.raw_value &gt; 0">
+                      <i class="fa fa-users"/> <field name="participants_count"/> participants
                     </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+                  </div>
+                  <div class="oe_kanban_bottom_right">
+                    <t t-if="record.execution_date.raw_value">
+                      <i class="fa fa-check-circle text-success"/> <field name="execution_date"/>
+                    </t>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
 
-    <!-- Action pour le planificateur -->
-    <record id="marketing_automation_scheduler_action" model="ir.actions.act_window">
-        <field name="name">Activités Planifiées</field>
-        <field name="res_model">marketing.automation.scheduler</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="search_view_id" ref="marketing_automation_scheduler_search_view"/>
-        <field name="context">{'search_default_scheduled': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Aucune activité planifiée trouvée !
-            </p>
-            <p>
-                Les activités planifiées sont générées automatiquement lorsque vous configurez
-                la planification avancée dans vos campagnes marketing automation.
-            </p>
-            <p>
-                Pour créer des activités planifiées :
-            </p>
-            <ol>
-                <li>Allez dans une campagne marketing automation</li>
-                <li>Créez ou modifiez une activité de type "Server Action"</li>
-                <li>Activez la "Planification avancée"</li>
-                <li>Configurez la fréquence, les jours et heures</li>
-                <li>Cliquez sur "Générer les Activités Planifiées"</li>
-            </ol>
-        </field>
-    </record>
+  <!-- ACTION -->
+  <record id="marketing_automation_scheduler_action" model="ir.actions.act_window">
+    <field name="name">Activités Planifiées</field>
+    <field name="res_model">marketing.automation.scheduler</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="search_view_id" ref="marketing_automation_scheduler_search_view"/>
+    <field name="context">{'search_default_scheduled': 1}</field>
+  </record>
 
-    <!-- Menu pour le planificateur -->
-    <menuitem id="marketing_automation_scheduler_menu"
-              name="Activités Planifiées"
-              parent="marketing_automation.marketing_automation_menu_root"
-              action="marketing_automation_scheduler_action"
-              sequence="20"/>
+  <!-- MENUS -->
+  <menuitem id="marketing_automation_scheduler_menu"
+            name="Activités Planifiées"
+            parent="marketing_automation.marketing_automation_menu_root"
+            action="marketing_automation_scheduler_action"
+            sequence="20"/>
 
-    <!-- Raccourci dans le tableau de bord -->
-    <record id="marketing_automation_scheduler_dashboard_action" model="ir.actions.act_window">
-        <field name="name">Activités du Jour</field>
-        <field name="res_model">marketing.automation.scheduler</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('scheduled_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]</field>
-        <field name="context">{'search_default_scheduled': 1}</field>
-    </record>
+  <!-- Raccourci tableau de bord -->
+  <record id="marketing_automation_scheduler_dashboard_action" model="ir.actions.act_window">
+    <field name="name">Activités du Jour</field>
+    <field name="res_model">marketing.automation.scheduler</field>
+    <field name="view_mode">list,form</field>
+    <!-- Domaine simple pour éviter l'évaluation Python au chargement -->
+    <field name="domain">[('scheduled_date','>=', context_today())]</field>
+    <field name="context">{'search_default_scheduled': 1}</field>
+  </record>
 
-    <menuitem id="marketing_automation_scheduler_dashboard_menu"
-              name="Activités du Jour"
-              parent="marketing_automation.marketing_automation_menu_root"
-              action="marketing_automation_scheduler_dashboard_action"
-              sequence="15"/>
+  <menuitem id="marketing_automation_scheduler_dashboard_menu"
+            name="Activités du Jour"
+            parent="marketing_automation.marketing_automation_menu_root"
+            action="marketing_automation_scheduler_dashboard_action"
+            sequence="15"/>
 
 </odoo>

@@ -6,55 +6,34 @@
     <field name="inherit_id" ref="marketing_automation.marketing_activity_view_form"/>
     <field name="arch" type="xml">
       <xpath expr="//field[@name='trigger_type']" position="after">
-        <!-- Ligne en 2 colonnes -->
-        <group col="2" modifiers="{'invisible': [['activity_type','!=','server_action']]}">
+          <group modifiers="{'invisible': [['activity_type','!=','server_action']]}">
+              <field name="is_scheduled" widget="boolean_toggle"/>
 
-          <!-- Colonne de gauche -->
-          <group string="Planification avancée">
-            <field name="is_scheduled" widget="boolean_toggle"/>
-          </group>
+              <separator string="Paramètres de planification"/>
 
-          <!-- Colonne de droite (elle-même en 2 colonnes) -->
-          <group string="Paramètres de planification"
-                col="2"
-                modifiers="{'invisible': ['|', ['is_scheduled','=',False], ['activity_type','!=','server_action']]}">
-
-            <!-- Sous-colonne 1 -->
-            <group string="Quantité &amp; Fréquence" col="2">
-              <field name="scheduled_quantity" modifiers="{'required': [['is_scheduled','=',True]]}"/>
-              <field name="schedule_frequency" modifiers="{'required': [['is_scheduled','=',True]]}"/>
+              <field name="scheduled_quantity"/>
+              <field name="schedule_frequency"/>
               <field name="interval_value"/>
               <field name="interval_unit"/>
-            </group>
+              <field name="time_slot_start"/>
+              <field name="time_slot_end"/>
+              <field name="schedule_start_date"/>
 
-            <!-- Sous-colonne 2 -->
-            <group string="Créneaux &amp; Jours" col="2">
-              <!-- Heures + date -->
-              <group>
-                <field name="time_slot_start"/>
-                <field name="time_slot_end"/>
-                <field name="schedule_start_date" colspan="2"/>
-              </group>
-              <!-- Jours (2 colonnes de cases) -->
-              <group col="2">
-                <field name="monday"/><field name="tuesday"/>
-                <field name="wednesday"/><field name="thursday"/>
-                <field name="friday"/><field name="saturday"/>
-                <field name="sunday"/>
-              </group>
-            </group>
+              <separator string="Jours"/>
+              <field name="monday"/>
+              <field name="tuesday"/>
+              <field name="wednesday"/>
+              <field name="thursday"/>
+              <field name="friday"/>
+              <field name="saturday"/>
+              <field name="sunday"/>
 
-            <!-- Bouton -->
-            <group colspan="2">
               <button name="action_generate_scheduled_activities"
                       type="object"
                       class="btn-primary"
                       string="Générer les activités planifiées"
                       modifiers="{'invisible': [['is_scheduled','=',False]]}"/>
-            </group>
           </group>
-
-        </group>
       </xpath>
     </field>
   </record>

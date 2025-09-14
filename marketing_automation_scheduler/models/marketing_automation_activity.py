@@ -155,7 +155,7 @@ class MarketingAutomationActivity(models.Model):
                 'source_activity_id': self.id,
                 'campaign_id': self.campaign_id.id,
                 'activity_type': self.activity_type,
-                'server_action': self.server_action.id if self.server_action else False,
+                'server_action_id': self.server_action_id.id if self.server_action_id else False,
                 'scheduled_date': scheduled_time,
                 'name': f"{self.name} - #{i + 1}",
                 'state': 'scheduled',

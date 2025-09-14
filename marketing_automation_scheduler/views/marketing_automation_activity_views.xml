@@ -6,9 +6,8 @@
     <field name="inherit_id" ref="marketing_automation.marketing_activity_view_form"/>
     <field name="arch" type="xml">
 
-      <!-- Insère après trigger_type -->
       <xpath expr="//field[@name='trigger_type']" position="after">
-        <!-- NB: sur v18, le type est "action" (pas "server_action") -->
+        <!-- Activer la planification seulement pour les actions serveur -->
         <group string="Planification Avancée" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
           <field name="is_scheduled"/>
         </group>
@@ -19,12 +18,23 @@
           <group string="Quantité et Fréquence">
             <field name="scheduled_quantity" attrs="{'required': [('is_scheduled', '=', True)]}"/>
             <field name="schedule_frequency" attrs="{'required': [('is_scheduled', '=', True)]}"/>
+            <!-- Tes champs existants alignés avec le modèle -->
+            <field name="interval_value" attrs="{'invisible': [('schedule_frequency', 'in', ('daily','monthly'))]}"/>
+            <field name="interval_unit"/>
+          </group>
+
+          <group string="Créneaux & Jours">
+            <field name="time_slot_start"/>
+            <field name="time_slot_end"/>
+            <field name="monday"/><field name="tuesday"/><field name="wednesday"/>
+            <field name="thursday"/><field name="friday"/><field name="saturday"/><field name="sunday"/>
+            <field name="schedule_start_date"/>
           </group>
         </group>
 
-        <!-- Liste simple sans onglet -->
+        <!-- Liste des éléments générés -->
         <group string="Planification (Scheduler)" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
-          <field name="scheduled_activity_ids" context="{'default_activity_id': active_id}">
+          <field name="generated_scheduler_ids" context="{'default_activity_id': active_id}">
             <tree editable="bottom">
               <field name="name"/>
               <field name="state"/>
@@ -36,6 +46,10 @@
                       attrs="{'invisible': [('state', '=', 'scheduled')]}"/>
             </tree>
           </field>
+          <!-- (optionnel) bouton pour générer depuis l'activité -->
+          <button name="action_generate_scheduled_activities" type="object"
+                  string="Générer les activités planifiées"
+                  attrs="{'invisible': [('is_scheduled','=',False)]}"/>
         </group>
       </xpath>
     </field>

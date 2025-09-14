@@ -5,21 +5,20 @@
     <field name="model">marketing.activity</field>
     <field name="inherit_id" ref="marketing_automation.marketing_activity_view_form"/>
     <field name="arch" type="xml">
-
       <xpath expr="//field[@name='trigger_type']" position="after">
-        <!-- Activer la planification seulement pour les actions serveur -->
-        <group string="Planification Avancée" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
+        <!-- Adapte la condition à TA base : 'action' (core v18) ou 'server_action' (si ta vue d’origine l’utilise encore). 
+             Si tu viens d’avoir des erreurs avec 'action', repasse à 'server_action'. -->
+        <group string="Planification Avancée" attrs="{'invisible': [('activity_type', '!=', 'server_action')]}">
           <field name="is_scheduled"/>
         </group>
 
         <group string="Paramètres de Planification"
-               attrs="{'invisible': ['|', ('is_scheduled', '=', False), ('activity_type', '!=', 'action')]}"
+               attrs="{'invisible': ['|', ('is_scheduled', '=', False), ('activity_type', '!=', 'server_action')]}"
                col="2">
           <group string="Quantité et Fréquence">
             <field name="scheduled_quantity" attrs="{'required': [('is_scheduled', '=', True)]}"/>
             <field name="schedule_frequency" attrs="{'required': [('is_scheduled', '=', True)]}"/>
-            <!-- Tes champs existants alignés avec le modèle -->
-            <field name="interval_value" attrs="{'invisible': [('schedule_frequency', 'in', ('daily','monthly'))]}"/>
+            <field name="interval_value"/>
             <field name="interval_unit"/>
           </group>
 
@@ -30,21 +29,12 @@
             <field name="thursday"/><field name="friday"/><field name="saturday"/><field name="sunday"/>
             <field name="schedule_start_date"/>
           </group>
+
+          <button name="action_generate_scheduled_activities"
+                  type="object"
+                  string="Générer les activités planifiées"
+                  attrs="{'invisible': [('is_scheduled','=',False)]}"/>
         </group>
-
-<!-- Liste des éléments générés -->
-<group string="Planification (Scheduler)" attrs="{'invisible': [('activity_type', '!=', 'action')]}">
-  <field name="generated_scheduler_ids" context="{'default_activity_id': active_id}">
-    <tree editable="bottom">
-      <field name="name"/>
-      <field name="scheduled_date"/>
-    </tree>
-  </field>
-
-  <button name="action_generate_scheduled_activities" type="object"
-          string="Générer les activités planifiées"
-          attrs="{'invisible': [('is_scheduled','=',False)]}"/>
-</group>
       </xpath>
     </field>
   </record>

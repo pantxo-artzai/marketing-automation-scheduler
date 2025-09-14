@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Groupes spécifiques au module -->
-    <record id="group_ma_scheduler_user" model="res.groups">
-        <field name="name">MA Scheduler - User</field>
-        <field name="category_id" ref="base.module_category_marketing"/>
-    </record>
+  <record id="group_ma_scheduler_user" model="res.groups">
+    <field name="name">MA Scheduler - User</field>
+    <field name="category_id" ref="base.module_category_marketing"/>
+  </record>
 
-    <record id="group_ma_scheduler_manager" model="res.groups">
-        <field name="name">MA Scheduler - Manager</field>
-        <field name="category_id" ref="base.module_category_marketing"/>
-    </record>
+  <record id="group_ma_scheduler_manager" model="res.groups">
+    <field name="name">MA Scheduler - Manager</field>
+    <field name="category_id" ref="base.module_category_marketing"/>
+  </record>
 </odoo>
